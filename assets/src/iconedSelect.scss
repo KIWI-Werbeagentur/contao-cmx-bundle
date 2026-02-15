@@ -1,3 +1,8 @@
+// Change the choices prefix
+$choices-selector: 'cmx_choices';
+
+@import "~choices.js/src/styles/choices.scss";
+
 .iconedSelect {
   margin-top: 3px;
   margin-bottom: 3px;
@@ -14,7 +19,7 @@
     }
   }
 
-  .choices {
+  .#{$choices-selector} {
     &[data-type*=select-one]::after {
       border-color: #a1a1a1 transparent transparent transparent;
       border-width: 7px 4px;
@@ -26,7 +31,7 @@
       margin-top: -10px;
     }
 
-    &[data-type*=select-one] .choices {
+    &[data-type*=select-one] .#{$choices-selector} {
       &__inner {
         padding-bottom: 6px;
       }
@@ -79,7 +84,7 @@
         padding: 0;
       }
 
-      &--dropdown, choices__list[aria-expanded] {
+      &--dropdown, .#{$choices-selector}__list[aria-expanded] {
         [data-color-scheme="dark"] & {
           background: var(--form-bg) url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMiIgaGVpZ2h0PSIxMiIgdmlld0JveD0iMCAwIDUwMCA1MDAiPjxsaW5lYXJHcmFkaWVudCBpZD0iYSIgeDE9IjEzMS41MjMiIHgyPSIzNjguNDc4IiB5MT0iNDIuNjMiIHkyPSIyNzkuNTg0IiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHN0b3Agb2Zmc2V0PSIwIiBzdG9wLWNvbG9yPSIjYjNiM2IzIi8+PHN0b3Agb2Zmc2V0PSIxIiBzdG9wLWNvbG9yPSIjOTk5Ii8+PC9saW5lYXJHcmFkaWVudD48cGF0aCBmaWxsPSJ1cmwoI2EpIiBkPSJNMjUwIDM5Ni42NjZjLTEuMTU1IDAtNC4xMS0xLjgzMi03LjExMy02Ljc1bC0xNjkuNi0yNzcuNDU1Yy0yLjUxNy00LjExNC0zLjE5LTYuOTgtMy4yOC04LjMxNC44MjctLjMzIDIuNTY1LS44MTIgNS42MjctLjgxMmgzNDguNzMzYzMuMDYzIDAgNC43OTguNDgyIDUuNjI3LjgxMi0uMDkgMS4zMzQtLjc2NiA0LjItMy4yOCA4LjMxNWwtMTY5LjYgMjc3LjQ1N2MtMy4wMDUgNC45MTctNS45NiA2Ljc1LTcuMTE0IDYuNzV6Ii8+PC9zdmc+) right -16px top 3px no-repeat;
         }
