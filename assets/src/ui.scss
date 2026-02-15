@@ -66,8 +66,15 @@
   }
 
   img {
+    height: calc(16px + 10px);
+    width: calc(16px + 10px);
     padding: 5px;
     object-fit: contain;
     border-radius: 100%;
+
+    // Hide the dark mode icons
+    &.color-scheme--dark {
+      display: none;
+    }
   }
 }

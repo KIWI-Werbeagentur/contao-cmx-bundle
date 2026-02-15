@@ -1,41 +1,50 @@
+{% macro get_backend_operation_link(operation, article) %}
+    {% set params = { do: article.type } %}
+
+    {% if operation == 'edit' %}
+        {% set params = params|merge({ table: 'tl_content', id: article.id }) %}
+    {% elseif operation == 'copy' %}
+        {% set params = params|merge({ id: article.id, act: 'paste', mode: 'copy', rt: contao.request_token }) %}
+    {% elseif operation == 'cut' %}
+        {% set params = params|merge({ id: article.id, act: 'paste', mode: 'cut', rt: contao.request_token }) %}
+    {% elseif operation == 'insert' %}
+        {% set params = params|merge({ id: copiedArticle(), act: 'copy', mode: 1, pid: article.id, rt: contao.request_token }) %}
+    {% elseif operation == 'page' %}
+        {% set params = params|merge({ pn: article.pid, rt: contao.request_token }) %}
+    {% endif %}
+
+    {{ path('contao_backend', params) }}
+{% endmacro %}
+
+{% macro get_backend_operation(operation, article) %}
+    {% if operation == 'insert' and not copiedArticle() %}
+        {# noop #}
+    {% else %}
+        <div{{ attrs().addClass(['ui__item', 'ui__item--' ~ operation]) }}>
+            <a{{ attrs().set('target', '_blank').set('href', _self.get_backend_operation_link(operation, article)) }}>
+                {% if operation == 'insert' %}
+                    {{ backend_icon('pasteafter.svg') }}
+                {% elseif operation == 'page' %}
+                    {{ backend_icon('regular.svg') }}
+                {% else %}
+                    {{ backend_icon(operation ~ '.svg') }}
+                {% endif %}
+            </a>
+        </div>
+    {% endif %}
+{% endmacro %}
+
 {% block content %}
-    {% if app.environment == "dev" or isPreview() %}
+    {% if app.environment == 'dev' or contao.is_preview_mode %}
         <div class="ui">
             <div class="ui__preview">
                 <div class="ui__elements">
-                    <div class="ui__item ui__item--edit">
-                        <a target="__blank" href="/contao?do={{ article.type }}&table=tl_content&id={{ article.id }}">
-                            <img src="/system/themes/flexible/icons/edit.svg" title="{{ 'Edit'|trans }}">
-                        </a>
-                    </div>
-                    <div class="ui__item ui__item--copy">
-                        <a
-                                href="/contao?do={{ article.type }}&id={{ article.id }}&act=paste&mode=copy&rt={{ csrf() }}">
-                            <img src="/system/themes/flexible/icons/copy.svg" title="{{ 'Copy'|trans }}">
-                        </a>
-                    </div>
-                    <div class="ui__item ui__item--cut">
-                        <a
-                                href="/contao?do={{ article.type }}&id={{ article.id }}&act=paste&mode=cut&rt={{ csrf() }}">
-                            <img src="/system/themes/flexible/icons/cut.svg" title="{{ 'Cut'|trans }}">
-                        </a>
-                    </div>
-                    {% if copiedArticle() %}
-                        <div class="ui__item ui__item--insert">
-                            <a target="__blank"
-                               href="/contao?do={{ article.type }}&id={{ copiedArticle() }}&act=copy&mode=1&pid={{ article.id }}&rt={{ csrf() }}">
-                                <img src="/system/themes/flexible/icons/pasteafter.svg" title="{{ 'Paste'|trans }}">
-                            </a>
-                        </div>
-                    {% endif %}
-                    <div class="ui__item ui__item--page">
-                        <a target="__blank" href="/contao?do={{ article.type }}&pn={{ article.pid }}&rt={{ csrf() }}">
-                            <img src="/system/themes/flexible/icons/regular.svg" title="{{ 'Page'|trans }}">
-                        </a>
-                    </div>
+                    {% for operation in ['edit', 'copy', 'cut', 'insert', 'page'] %}
+                        {{ _self.get_backend_operation(operation, article) }}
+                    {% endfor %}
                 </div>
                 <div class="ui__preview__icon">
-                    <img src="/system/themes/flexible/icons/header.svg">
+                    {{ backend_icon('header.svg') }}
                 </div>
             </div>
         </div>

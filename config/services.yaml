@@ -9,7 +9,7 @@ services:
       - 'twig.extension'
   Kiwi\Contao\CmxBundle\Twig\BackendExtension:
     arguments:
-      - '@contao.image.studio'
+      - '@request_stack'
     tags:
       - 'twig.extension'
   Kiwi\Contao\CmxBundle\DataContainer\PaletteManipulatorExtended: ~
