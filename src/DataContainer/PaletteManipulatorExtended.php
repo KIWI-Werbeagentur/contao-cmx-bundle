@@ -34,7 +34,7 @@ class PaletteManipulatorExtended extends PaletteManipulator
     }
 
     public function getPaletteFields(string $strPalette, string $table){
-        $arrPaletteSections = StringUtil::trimsplit(';',$GLOBALS['TL_DCA'][$table]['palettes'][$strPalette]);
+        $arrPaletteSections = StringUtil::trimsplit(';', $GLOBALS['TL_DCA'][$table]['palettes'][$strPalette] ?? '');
 
         $arrFields = [];
 
