@@ -1,0 +1,1 @@
+{"version":3,"file":"backend.1aed5cee.css","mappings":"AAEQ,4BACI,sEACA","sources":["webpack:///./assets/styles/backend.scss"],"sourcesContent":["#picker-menu {\n    a {\n        &.anchorPicker {\n            background-image: url(../icons/anchor-hash.svg);\n            background-size: 14px;\n        }\n    }\n}\n"],"names":[],"sourceRoot":""}

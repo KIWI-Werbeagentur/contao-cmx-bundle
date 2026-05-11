@@ -3,7 +3,8 @@
 namespace Kiwi\Contao\CmxBundle\Widget\Backend;
 
 use Contao\SelectMenu;
-use Contao\StringUtil;
+use Contao\System;
+use Symfony\Component\DomCrawler\Crawler;
 
 class IconedSelectMenuWidget extends SelectMenu
 {
@@ -16,95 +17,59 @@ class IconedSelectMenuWidget extends SelectMenu
 
     public function generate()
     {
-        $GLOBALS['TL_JAVASCRIPT'][]="/bundles/kiwicmx/main.js";
+        $GLOBALS['TL_JAVASCRIPT']['iconedSelect.js'] = $this->asset(
+            'iconedSelect.js',
+            'kiwi_cmx',
+        );
 
+        $GLOBALS['TL_CSS']['iconedSelect.css'] = trim($this->asset(
+            'iconedSelect.css',
+            'kiwi_cmx',
+        ), '/');
+
+        // Prepare icon array
         $arrIcons=[];
         $arrData = $GLOBALS['TL_DCA'][$this->strTable]['fields'][$this->strField];
         if (\is_array($arrData['icon_callback'] ?? null))
         {
             $arrCallback = $arrData['icon_callback'];
-            $arrIcons = static::importStatic($arrCallback[0])->{$arrCallback[1]}($this);
+            $arrIcons = System::importStatic($arrCallback[0])->{$arrCallback[1]}($this);
         }
         elseif (\is_callable($arrData['icon_callback'] ?? null))
         {
             $arrIcons = $arrData['icon_callback']($this);
         }
 
-        //copied from parent
-        $arrOptions = array();
-        $strClass = 'tl_select';
+        // Force chosen select
+        $this->chosen = true;
 
-        if ($this->multiple)
-        {
-            $this->strName .= '[]';
-            $strClass = 'tl_mselect';
+        // Get HTML string
+        $strBuffer = parent::generate();
+
+        // Load HTML string as DOM document
+        $crawler = new Crawler($strBuffer);
+
+        $wrapper = $crawler->filter('.tl_select_wrapper');
+        if ($wrapper->count() <= 0) {
+            return $strBuffer;
         }
 
-        // Add an empty option if there are none
-        if (empty($this->arrOptions) || !\is_array($this->arrOptions))
-        {
-            $this->arrOptions = array(array('value'=>'', 'label'=>'-'));
-        }
+        // replace 'data-controller' attribute with class
+        $wrapperNode = $wrapper->getNode(0);
+        $wrapperNode->removeAttribute('data-controller');
+        $wrapperNode->setAttribute('class', $wrapperNode->getAttribute('class') . ' cmx--iconedSelect');
 
-        $arrAllOptions = $this->arrOptions;
-
-        // Add an unknown option, so it is not lost when saving the record (see #920)
-        if (isset($this->unknownOption[0]))
-        {
-            $arrAllOptions[] = array('value' => $this->unknownOption[0], 'label' => \sprintf($GLOBALS['TL_LANG']['MSC']['unknownOption'], $this->unknownOption[0]));
-        }
-
-        foreach ($arrAllOptions as $strKey=>$arrOption)
-        {
-            if (isset($arrOption['value']))
-            {
-                $arrOptions[] = \sprintf(
-                    //different from parent
-                    '<option value="%s"%s data-icon="%s">%s</option>',
-                    self::specialcharsValue($arrOption['value']),
-                    $this->isSelected($arrOption),
-                    //different from parent
-                    $arrIcons[$arrOption['value']] ?? '',
-                    $arrOption['label'] ?? null
-                );
+        // add data-icon attribute to each option
+        $crawler->filter('option')->each(function (Crawler $optionCrawler) use ($arrIcons) {
+            $option = $optionCrawler->getNode(0);
+            if ($arrIcons[$option->getAttribute('value')] ?? false) {
+                $option->setAttribute('data-icon', $arrIcons[$option->getAttribute('value')]);
             }
-            else
-            {
-                $arrOptgroups = array();
+        });
 
-                foreach ($arrOption as $arrOptgroup)
-                {
-                    $arrOptgroups[] = \sprintf(
-                        //different from parent
-                        '<option value="%s"%s data-icon="%s">%s</option>',
-                        self::specialcharsValue($arrOptgroup['value'] ?? ''),
-                        $this->isSelected($arrOptgroup),
-                        //different from parent
-                        $arrIcons[$arrOptgroup['value']] ?? '',
-                        $arrOptgroup['label'] ?? null
-                    );
-                }
+        // Prepare HTML output
+        $strBuffer = $crawler->filter('body')->html();
 
-                $arrOptions[] = \sprintf('<optgroup label="&nbsp;%s">%s</optgroup>', StringUtil::specialchars($strKey), implode('', $arrOptgroups));
-            }
-        }
-
-        // Chosen
-        if ($this->chosen)
-        {
-            $strClass .= ' tl_chosen';
-        }
-
-        return \sprintf(
-            '<div class="iconedSelect">%s<select name="%s" id="ctrl_%s" class="%s%s"%s data-action="focus->contao--scroll-offset#store">%s</select>%s</div>',
-            $this->multiple ? '<input type="hidden" name="' . (str_ends_with($this->strName, '[]') ? substr($this->strName, 0, -2) : $this->strName) . '" value="">' : '',
-            $this->strName,
-            $this->strId,
-            $strClass,
-            $this->strClass ? ' ' . $this->strClass : '',
-            $this->getAttributes(),
-            implode('', $arrOptions),
-            $this->wizard
-        );
+        return $strBuffer;
     }
 }

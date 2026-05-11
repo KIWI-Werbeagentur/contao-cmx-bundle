@@ -13,7 +13,12 @@ services:
     tags:
       - 'twig.extension'
   Kiwi\Contao\CmxBundle\DataContainer\PaletteManipulatorExtended: ~
-  Kiwi\Contao\CmxBundle\EventListener\LoadDataContainerListener: ~
+  Kiwi\Contao\CmxBundle\EventListener\LoadDataContainerListener:
+    arguments:
+      - '@assets.packages'
+      - '@contao.routing.scope_matcher'
+      - '@request_stack'
+      - '%kernel.environment%'
   Kiwi\Contao\CmxBundle\EventListener\ReplaceInsertTagsListener:
     arguments:
       - '@contao.routing.content_url_generator'
