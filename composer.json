@@ -16,6 +16,8 @@
     ],
     "require": {
         "php": "^8.3",
+        "ext-dom": "*",
+        "symfony/css-selector": "^7.4",
         "contao/core-bundle": "^5.3"
     },
     "require-dev": {
