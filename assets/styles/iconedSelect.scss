@@ -1,53 +1,21 @@
 .cmx--iconedSelect {
   img {
-    max-width: 16px;
+    width: 1em;
+    height: 1em;
+    margin-right: .25em;
 
-    [data-color-scheme="dark"] &[src$=".svg"] {
+    [data-color-scheme="dark"] & {
       filter: invert(1);
     }
   }
 
-  // The marker class lives on the .choices container itself (Choices copies the
-  // <select> class list onto containerOuter), so target the container as a
-  // compound, not a descendant.
-  &.choices {
-    height: auto;
-
-    &[data-type*=select-one] {
-      .choices__inner::after {
-        height: 0;
-        width: 0;
-        background: none;
-        border-style: solid;
-        border-color: #a1a1a1 transparent transparent transparent;
-        border-width: 7px 4px;
-        right: 7.5px;
-        top: 50%;
-        margin-top: -2.5px;
-      }
-
-      &.is-open .choices__inner::after {
-        border-color: transparent transparent #a1a1a1 transparent;
-        margin-top: -10px;
-      }
-    }
+  .choices__item img {
+    vertical-align: top;
   }
 
-  .choices__inner {
-    height: auto;
-  }
-
-  .choices__item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    white-space: nowrap;
-
-    span {
-      color: #cecece;
-      [data-color-scheme="dark"] & {
-        color: #7f7f7f;
-      }
-    }
+  // force white icons on the blue highlight background to match the text color
+  .choices__item.is-highlighted img,
+  .chzn-results .highlighted img {
+    filter: brightness(0) invert(1);
   }
 }
