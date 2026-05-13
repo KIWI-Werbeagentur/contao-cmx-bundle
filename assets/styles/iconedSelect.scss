@@ -1,6 +1,7 @@
 .cmx--iconedSelect {
   img {
-    max-width: 16px;
+    max-width: 1em;
+    max-height: 1em;
 
     [data-color-scheme="dark"] &[src$=".svg"] {
       filter: invert(1);
@@ -12,21 +13,21 @@
     &[data-type*=select-one] {
       .choices__inner {
         &::after {
-          height: 0;
-          width: 0;
-          background: none;
-          border-style: solid;
-          border-color: #a1a1a1 transparent transparent transparent;
-          border-width: 7px 4px;
-          right: 7.5px;
-          top: 50%;
-          margin-top: -2.5px;
+          //height: 0;
+          //width: 0;
+          //background: none;
+          //border-style: solid;
+          //border-color: #a1a1a1 transparent transparent transparent;
+          //border-width: 7px 4px;
+          //right: 7.5px;
+          //top: 50%;
+          //margin-top: -2.5px;
         }
       }
       &.is-open .choices__inner {
         &::after {
-          border-color: transparent transparent #a1a1a1 transparent;
-          margin-top: -10px;
+          //border-color: transparent transparent #a1a1a1 transparent;
+          //margin-top: -10px;
         }
       }
     }
