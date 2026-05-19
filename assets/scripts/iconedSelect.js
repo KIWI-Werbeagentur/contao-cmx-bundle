@@ -1,11 +1,9 @@
 import '../styles/iconedSelect.scss';
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (typeof Choices === 'undefined') {
-        console.error('Choices.js is not loaded');
-        return;
-    }
+const initIconedSelects = () => {
     document.querySelectorAll('.cmx--iconedSelect select').forEach(iconedSelect=>{
+        if (iconedSelect.closest('.choices')) return; // already initialized
+
         const arrOptions=[]
 
         // Add icon
@@ -21,17 +19,17 @@ document.addEventListener('DOMContentLoaded', () => {
                 label: iconedOption.dataset.icon ? `<img src="${iconedOption.dataset.icon}"/> ${label}` : label,
                 id: iconedOption.value,
                 selected: iconedOption.selected,
-                customProperties: {
-                    label: label,
-                },
+                customProperties: { label },
             })
         })
 
+        // Copied and adjusted from Contao's choices implementation
         const choices = new Choices(iconedSelect, {
             choices: arrOptions,
             shouldSort: false,
             duplicateItemsAllowed: false,
-            allowHTML: true,
+            removeItemButton: true,
+            allowHTML: true, // needed to show the icons
             searchEnabled: iconedSelect.options.length > 7,
             searchResultLimit: -1,
             appendGroupInSearch: true,
@@ -54,5 +52,17 @@ document.addEventListener('DOMContentLoaded', () => {
             noChoicesText: Contao.lang.noOptions,
             removeItemLabelText: (value) => Contao.lang.removeItem.concat(' ').concat(value),
         })
+
+        // Make the choices instance available on the element (e.g. for cleanup)
+        iconedSelect._choices = choices;
     })
-})
+}
+
+document.addEventListener('DOMContentLoaded', initIconedSelects);
+document.addEventListener('turbo:load', initIconedSelects);
+document.addEventListener('turbo:before-cache', () => {
+    document.querySelectorAll('.cmx--iconedSelect select').forEach(select => {
+        select._choices?.destroy();
+        select._choices = null;
+    });
+});

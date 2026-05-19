@@ -54,7 +54,7 @@ class IconedSelectMenuWidget extends SelectMenu
             return $strBuffer;
         }
 
-        // replace 'data-controller' attribute with class
+        // replace 'data-controller' attribute with custom class (for JS targeting)
         $wrapperNode = $wrapper->getNode(0);
         $wrapperNode->removeAttribute('data-controller');
         $wrapperNode->setAttribute('class', $wrapperNode->getAttribute('class') . ' cmx--iconedSelect');
