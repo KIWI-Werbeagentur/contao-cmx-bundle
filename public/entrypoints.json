@@ -1,16 +1,11 @@
 {
   "entrypoints": {
-    "iconedSelect": {
-      "css": [
-        "/bundles/kiwicmx/iconedSelect.a2b93868.css"
-      ],
-      "js": [
-        "/bundles/kiwicmx/iconedSelect.2bd12ea5.js"
-      ]
-    },
     "backend": {
       "css": [
-        "/bundles/kiwicmx/backend.1aed5cee.css"
+        "/bundles/kiwicmx/backend.fa752c59.css"
+      ],
+      "js": [
+        "/bundles/kiwicmx/backend.31c3cf82.js"
       ]
     },
     "ui": {

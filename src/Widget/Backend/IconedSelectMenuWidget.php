@@ -17,15 +17,6 @@ class IconedSelectMenuWidget extends SelectMenu
 
     public function generate()
     {
-        $GLOBALS['TL_JAVASCRIPT']['iconedSelect.js'] = $this->asset(
-            'iconedSelect.js',
-            'kiwi_cmx',
-        );
-
-        $GLOBALS['TL_CSS']['iconedSelect.css'] = trim($this->asset(
-            'iconedSelect.css',
-            'kiwi_cmx',
-        ), '/');
 
         // Prepare icon array
         $arrIcons=[];

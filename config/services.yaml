@@ -13,6 +13,9 @@ services:
     tags:
       - 'twig.extension'
   Kiwi\Contao\CmxBundle\DataContainer\PaletteManipulatorExtended: ~
+  Kiwi\Contao\CmxBundle\EventListener\InitializeSystemListener:
+    arguments:
+      - '@assets.packages'
   Kiwi\Contao\CmxBundle\EventListener\LoadDataContainerListener:
     arguments:
       - '@assets.packages'
