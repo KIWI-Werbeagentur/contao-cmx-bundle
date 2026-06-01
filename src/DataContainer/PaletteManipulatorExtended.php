@@ -58,26 +58,41 @@ class PaletteManipulatorExtended extends PaletteManipulator
 
         $arrPaletteFields = $this->getPaletteFields($strPalette, $table);
 
-        // 1) Direct hit in the main palette.
-        if (in_array($strField, $arrPaletteFields, true)) {
-            return true;
-        }
-
-        // 2) Hit in a subpalette whose selector is reachable from this palette.
         $arrSelectors = (array) ($GLOBALS['TL_DCA'][$table]['palettes']['__selector__'] ?? []);
         $arrSubpalettes = (array) ($GLOBALS['TL_DCA'][$table]['subpalettes'] ?? []);
 
+        return $this->searchFields($arrPaletteFields, $strField, $arrSelectors, $arrSubpalettes, []);
+    }
+
+    /**
+     * Recursively searches $arrFields (and any subpalettes reachable via selectors) for $strField.
+     *
+     * @param string[] $arrFields     Fields to search in this level.
+     * @param string   $strField      The field we are looking for.
+     * @param string[] $arrSelectors  All selector field names of the table.
+     * @param array    $arrSubpalettes The table's subpalettes definition.
+     * @param string[] $arrVisited    Subpalette keys already visited (prevents infinite recursion).
+     */
+    private function searchFields(array $arrFields, string $strField, array $arrSelectors, array $arrSubpalettes, array $arrVisited): bool
+    {
+        // 1) Direct hit at this level.
+        if (in_array($strField, $arrFields, true)) {
+            return true;
+        }
+
+        // 2) Follow selectors that are present at this level into their subpalettes.
         foreach ($arrSelectors as $strSelector) {
-            if (!in_array($strSelector, $arrPaletteFields, true)) continue;
+            if (!in_array($strSelector, $arrFields, true)) continue;
 
             foreach ($arrSubpalettes as $strSubKey => $varSubFields) {
                 if ($strSubKey !== $strSelector && !str_starts_with((string) $strSubKey, $strSelector . '_')) continue;
                 if (!is_string($varSubFields)) continue;
+                if (in_array($strSubKey, $arrVisited, true)) continue;
 
-                foreach (StringUtil::trimsplit(',', $varSubFields) as $strSubField) {
-                    if ($strSubField === $strField) {
-                        return true;
-                    }
+                $arrSubFields = StringUtil::trimsplit(',', $varSubFields);
+
+                if ($this->searchFields($arrSubFields, $strField, $arrSelectors, $arrSubpalettes, array_merge($arrVisited, [$strSubKey]))) {
+                    return true;
                 }
             }
         }
