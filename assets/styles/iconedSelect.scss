@@ -7,45 +7,46 @@
     }
   }
 
-  .choices {
+  // The marker class lives on the .choices container itself (Choices copies the
+  // <select> class list onto containerOuter), so target the container as a
+  // compound, not a descendant.
+  &.choices {
     height: auto;
+
     &[data-type*=select-one] {
-      .choices__inner {
-        &::after {
-          height: 0;
-          width: 0;
-          background: none;
-          border-style: solid;
-          border-color: #a1a1a1 transparent transparent transparent;
-          border-width: 7px 4px;
-          right: 7.5px;
-          top: 50%;
-          margin-top: -2.5px;
-        }
+      .choices__inner::after {
+        height: 0;
+        width: 0;
+        background: none;
+        border-style: solid;
+        border-color: #a1a1a1 transparent transparent transparent;
+        border-width: 7px 4px;
+        right: 7.5px;
+        top: 50%;
+        margin-top: -2.5px;
       }
-      &.is-open .choices__inner {
-        &::after {
-          border-color: transparent transparent #a1a1a1 transparent;
-          margin-top: -10px;
-        }
+
+      &.is-open .choices__inner::after {
+        border-color: transparent transparent #a1a1a1 transparent;
+        margin-top: -10px;
       }
     }
+  }
 
-    &__inner {
-      height: auto;
-    }
+  .choices__inner {
+    height: auto;
+  }
 
-    &__item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      white-space: nowrap;
+  .choices__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    white-space: nowrap;
 
-      span {
-        color: #cecece;
-        [data-color-scheme="dark"] & {
-          color: #7f7f7f;
-        }
+    span {
+      color: #cecece;
+      [data-color-scheme="dark"] & {
+        color: #7f7f7f;
       }
     }
   }

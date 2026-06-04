@@ -12,8 +12,7 @@ Encore
     .cleanupOutputBeforeBuild()
     .disableSingleRuntimeChunk()
 
-    .addEntry('iconedSelect', './assets/scripts/iconedSelect.js')
-    .addStyleEntry('backend', './assets/styles/backend.scss')
+    .addEntry('backend', './assets/backend.js')
     .addStyleEntry('ui', './assets/styles/ui.scss')
 
     //.configureBabel((config) => {

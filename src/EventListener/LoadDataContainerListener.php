@@ -40,6 +40,14 @@ class LoadDataContainerListener
                 'backend.css',
                 'kiwi_cmx',
             ), '/');
+
+            // The icon-select widget is a DCA field, so loadDataContainer always fires before it renders.
+            // Loading the script here keeps it back end scoped.
+            // Turbo keeps the head script across navigations, so its listeners stay registered.
+            $GLOBALS['TL_JAVASCRIPT']['cmx'] = $this->packages->getUrl(
+                'backend.js',
+                'kiwi_cmx',
+            );
         }
     }
 }
