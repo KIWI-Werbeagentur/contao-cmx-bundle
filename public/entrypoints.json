@@ -2,10 +2,10 @@
   "entrypoints": {
     "backend": {
       "css": [
-        "/bundles/kiwicmx/backend.fa752c59.css"
+        "/bundles/kiwicmx/backend.f33f5a45.css"
       ],
       "js": [
-        "/bundles/kiwicmx/backend.c37b559f.js"
+        "/bundles/kiwicmx/backend.46989416.js"
       ]
     },
     "ui": {

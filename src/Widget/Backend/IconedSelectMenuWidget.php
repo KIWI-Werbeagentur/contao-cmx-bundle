@@ -31,7 +31,9 @@ class IconedSelectMenuWidget extends SelectMenu
             $arrIcons = $arrData['icon_callback']($this);
         }
 
-        // Force chosen select
+        // Keep core "chosen" enabled. On Contao 5.7 this yields the native
+        // Choices.js component, on Contao 5.3 the legacy MooTools "chosen"
+        // select. The JS detects which one is present and feeds the icons to it.
         $this->chosen = true;
 
         // Get HTML string
@@ -40,15 +42,24 @@ class IconedSelectMenuWidget extends SelectMenu
         // Load HTML string as DOM document
         $crawler = new Crawler($strBuffer);
 
-        $wrapper = $crawler->filter('.tl_select_wrapper');
-        if ($wrapper->count() <= 0) {
+        // The <select> exists in every Contao version (unlike the
+        // .tl_select_wrapper, which only Contao 5.7+ emits).
+        $select = $crawler->filter('select');
+        if ($select->count() <= 0) {
             return $strBuffer;
         }
 
-        // replace 'data-controller' attribute with custom class (for JS targeting)
-        $wrapperNode = $wrapper->getNode(0);
-        $wrapperNode->removeAttribute('data-controller');
-        $wrapperNode->setAttribute('class', $wrapperNode->getAttribute('class') . ' cmx--iconedSelect');
+        // Marker class on the <select>. Both Choices.js and the legacy chosen
+        // copy the select's class list onto their container, so the existing
+        // .cmx--iconedSelect styles keep applying on both versions.
+        $selectNode = $select->getNode(0);
+        $selectNode->setAttribute('class', trim($selectNode->getAttribute('class') . ' cmx--iconedSelect'));
+
+        // Contao 5.7+: stop the native choices controller from also
+        // initialising, since our JS drives Choices.js itself. No-op on 5.3.
+        foreach ($crawler->filter('[data-controller*="choices"]') as $node) {
+            $node->removeAttribute('data-controller');
+        }
 
         // add data-icon attribute to each option
         $crawler->filter('option')->each(function (Crawler $optionCrawler) use ($arrIcons) {
