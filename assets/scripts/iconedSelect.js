@@ -28,7 +28,7 @@ const initIconedSelects = () => {
             choices: arrOptions,
             shouldSort: false,
             duplicateItemsAllowed: false,
-            removeItemButton: true,
+            removeItemButton: iconedSelect.multiple,
             allowHTML: true, // needed to show the icons
             searchEnabled: iconedSelect.options.length > 7,
             searchResultLimit: -1,
