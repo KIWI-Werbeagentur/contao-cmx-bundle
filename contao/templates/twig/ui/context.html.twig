@@ -1,5 +1,5 @@
 {% block content %}
-    {% if app.environment == "dev" or isPreview() %}
+    {% if not app.request().query.get('_clp') and (app.environment == "dev" or isPreview()) %}
         <div class="ui">
             <div class="ui__preview">
                 <div class="ui__elements">
