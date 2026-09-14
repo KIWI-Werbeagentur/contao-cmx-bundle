@@ -21,6 +21,8 @@
     });
     CLP_FE.set('cmx:page-children', (ctx, post, ui) => {
         if (ctx.table !== 'tl_article') return;
-        return ui.button({icon:_pageIcon,class:'cmx-badge-page-children',title:'Seite anzeigen',postOptions:{type:'cmx:page-children',parentTable:ctx.parentTable||''}});
+        const pageId = ctx.el.dataset.contaoPage;
+        if (pageId === undefined || pageId <= 0) return;
+        return ui.button({icon:_pageIcon,class:'cmx-badge-page-children',title:'Seite anzeigen',postOptions:{type:'cmx:page-children',table:ctx.table,pageId}});
     });
 })();

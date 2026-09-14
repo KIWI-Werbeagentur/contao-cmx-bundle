@@ -47,11 +47,12 @@
             }
         });
         CLP_BE.on('cmx:page-children', (d,e) => {
-            const {table, id, parentTable} = d;
-            if (!table || !id) return;
+            const {table, pageId} = d;
+            if (!table || !pageId) return;
+            const rt   = window.Contao?.request_token || window.Contao?.requestToken || '';
             let params;
             if (table === 'tl_article') {
-                params = new URLSearchParams({do: 'article', pn: String(pageId)});
+                params = new URLSearchParams({do: 'article', pn: String(pageId), rt});
             } else return;
             const url = window.location.pathname + '?' + params.toString();
             if (window.Turbo) {
