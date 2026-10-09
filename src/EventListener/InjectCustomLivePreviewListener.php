@@ -16,7 +16,10 @@ class InjectCustomLivePreviewListener
 
     public function __invoke(string $buffer): string
     {
-        $url = $this->packages->getUrl('bundles/kiwicmx/cmx-live-preview.js');
+        $url = $this->packages->getUrl(
+            'livePreview.js',
+            'kiwi_cmx',
+        );
         $jsTag   = '<script src="' . htmlspecialchars($url, \ENT_QUOTES, 'UTF-8') . '" defer></script>';
 
         // Inject JS into <head>

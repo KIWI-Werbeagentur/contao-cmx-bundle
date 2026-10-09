@@ -7,6 +7,11 @@
     %}
 {% endif %}
 
+{% set wrapperAttributes = attrs()
+    .setIfExists('data-cmx-ui', id)
+    .mergeWith(wrapperAttributes|default)
+%}
+
 {% block content %}
     {{ parent() }}
     {{ include('@Contao/ui/context.html.twig', {article: _context}) }}

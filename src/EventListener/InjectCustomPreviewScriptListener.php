@@ -27,7 +27,10 @@ class InjectCustomPreviewScriptListener
         $content = $response->getContent();
         if (false === $content || !str_contains($content, '</body>')) return $response;
 
-        $url = $this->packages->getUrl('bundles/kiwicmx/cmx-live-preview-frontend.js');
+        $url = $this->packages->getUrl(
+            'livePreviewFe.js',
+            'kiwi_cmx',
+        );
         $js   = '<script src="' . htmlspecialchars($url, \ENT_QUOTES, 'UTF-8') . '" defer></script>';
 
         $response->setContent(str_replace('</body>', $js . '</body>', $content));
