@@ -1,0 +1,8 @@
+{% extends '@Contao/frontend_preview/toolbar.html.twig' %}
+
+{% block widgets %}
+    <div>
+        <button type="button" id="showEditor" class="tl_submit">{{ 'MSC.showEditor'|trans([], 'contao_default') }}</button>
+    </div>
+    {{ parent() }}
+{% endblock %}

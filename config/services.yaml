@@ -22,6 +22,8 @@ services:
   Kiwi\Contao\CmxBundle\EventListener\ReplaceInsertTagsListener:
     arguments:
       - '@contao.routing.content_url_generator'
+  Kiwi\Contao\CmxBundle\EventListener\InjectCustomLivePreviewListener: ~
+  Kiwi\Contao\CmxBundle\EventListener\InjectCustomPreviewScriptListener: ~
   Kiwi\Contao\CmxBundle\Widget\Backend\IconedSelectMenuWidget: ~
   contao_anchor.picker.anchor_provider:
     class: Kiwi\Contao\CmxBundle\Picker\AnchorPickerProvider

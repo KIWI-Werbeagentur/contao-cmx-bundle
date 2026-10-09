@@ -18,7 +18,8 @@
         "php": "^8.3",
         "ext-dom": "*",
         "symfony/css-selector": "^7.4",
-        "contao/core-bundle": "^5.3"
+        "contao/core-bundle": "^5.3",
+        "think-digital-agency/contao-live-preview": "^3.1"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.0"

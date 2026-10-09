@@ -1,0 +1,39 @@
+{% extends '@Contao/frontend_preview/toolbar_js.html.twig' %}
+
+{% block script %}
+    {{ parent() }}
+    <script{{ attrs().setIfExists('nonce', csp_handler.getNonce('script-src')) }}>
+        (function () {
+            const toolbarWrapper = document.getElementsByTagName('cto-toolbar')[0];
+            const toolbar = toolbarWrapper.shadowRoot.querySelector('.cto-toolbar');
+
+            // Initialize preview editor
+            if ('hidden' === localStorage.getItem('contao/previewEditor/displayState')) {
+                document.body.setAttribute('data-cmx-ui', 'hidden');
+            } else {
+                document.body.setAttribute('data-cmx-ui', 'visible');
+            }
+
+            toolbar.addEventListener('cto-toolbar-loaded', function() {
+                const editorButton = toolbar.querySelector('#showEditor');
+
+                if (!editorButton) {
+                    return;
+                }
+
+                editorButton.addEventListener('click', function(event) {
+                    event.preventDefault();
+
+                    // toggle preview editor
+                    if (document.body.getAttribute('data-cmx-ui') === 'hidden') {
+                        localStorage.setItem('contao/previewEditor/displayState', 'visible');
+                        document.body.setAttribute('data-cmx-ui', 'visible');
+                    } else {
+                        localStorage.setItem('contao/previewEditor/displayState', 'hidden');
+                        document.body.setAttribute('data-cmx-ui', 'hidden');
+                    }
+                });
+            });
+        })();
+    </script>
+{% endblock %}

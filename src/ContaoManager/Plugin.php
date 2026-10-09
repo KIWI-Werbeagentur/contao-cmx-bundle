@@ -9,6 +9,7 @@ use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
 use Contao\ManagerPlugin\Config\ConfigPluginInterface;
 use Kiwi\Contao\CmxBundle\KiwiCmxBundle;
 use Symfony\Component\Config\Loader\LoaderInterface;
+use ThinkDigital\ContaoLivePreview\ContaoLivePreviewBundle;
 
 class Plugin implements BundlePluginInterface, ConfigPluginInterface
 {
@@ -20,7 +21,7 @@ class Plugin implements BundlePluginInterface, ConfigPluginInterface
         return [
             BundleConfig::create(KiwiCmxBundle::class)
                 ->setLoadAfter([
-                    ContaoCoreBundle::class
+                    ContaoCoreBundle::class, ContaoLivePreviewBundle::class
                 ]),
         ];
     }

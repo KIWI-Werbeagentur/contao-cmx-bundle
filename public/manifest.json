@@ -1,9 +1,15 @@
 {
+  "frontend.js": "/bundles/kiwicmx/frontend.30748662.js",
   "backend.css": "/bundles/kiwicmx/backend.9ab34444.css",
   "backend.js": "/bundles/kiwicmx/backend.46989416.js",
-  "ui.css": "/bundles/kiwicmx/ui.13096455.css",
+  "livePreview.js": "/bundles/kiwicmx/livePreview.49d0ca3e.js",
+  "livePreviewFe.js": "/bundles/kiwicmx/livePreviewFe.f50813b9.js",
+  "ui.css": "/bundles/kiwicmx/ui.0e7403cf.css",
   "images/anchor-hash.svg": "/bundles/kiwicmx/images/anchor-hash.98afd87f.svg",
+  "frontend.30748662.js.map": "/bundles/kiwicmx/frontend.30748662.js.map",
   "backend.9ab34444.css.map": "/bundles/kiwicmx/backend.9ab34444.css.map",
   "backend.46989416.js.map": "/bundles/kiwicmx/backend.46989416.js.map",
-  "ui.13096455.css.map": "/bundles/kiwicmx/ui.13096455.css.map"
+  "livePreview.49d0ca3e.js.map": "/bundles/kiwicmx/livePreview.49d0ca3e.js.map",
+  "livePreviewFe.f50813b9.js.map": "/bundles/kiwicmx/livePreviewFe.f50813b9.js.map",
+  "ui.0e7403cf.css.map": "/bundles/kiwicmx/ui.0e7403cf.css.map"
 }
