@@ -10,6 +10,8 @@ cmx-ui {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 
   &::before {
@@ -39,8 +41,11 @@ cmx-ui {
     border-radius: 3px;
     white-space: nowrap;
     pointer-events: auto;
-    transform: translateY(-100%);
     z-index: 99;
+
+    &:not(&--inside) {
+      transform: translateY(-100%);
+    }
   }
 
   &__label {
