@@ -1,5 +1,17 @@
 {% extends "@Contao/mod_article.html5" %}
 
+{% if app.request().query.get('_clp') %}
+    {% set wrapperAttributes = attrs()
+        .setIfExists('data-contao-page', pid)
+        .mergeWith(wrapperAttributes|default)
+    %}
+{% endif %}
+
+{% set wrapperAttributes = attrs()
+    .setIfExists('data-cmx-ui', id)
+    .mergeWith(wrapperAttributes|default)
+%}
+
 {% block content %}
     {{ parent() }}
     {{ include('@Contao/ui/context.html.twig', {article: _context}) }}

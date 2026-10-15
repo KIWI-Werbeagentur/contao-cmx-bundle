@@ -12,7 +12,10 @@ Encore
     .cleanupOutputBeforeBuild()
     .disableSingleRuntimeChunk()
 
+    .addEntry('frontend', './assets/ui.js')
     .addEntry('backend', './assets/backend.js')
+    .addEntry('livePreview', './assets/livePreview.js')
+    .addEntry('livePreviewFe', './assets/livePreviewFe.js')
     .addStyleEntry('ui', './assets/styles/ui.scss')
 
     //.configureBabel((config) => {

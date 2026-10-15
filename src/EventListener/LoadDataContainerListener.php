@@ -6,6 +6,7 @@ namespace Kiwi\Contao\CmxBundle\EventListener;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\Template;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -31,10 +32,15 @@ class LoadDataContainerListener
             ||
             $request?->attributes->get('_preview') === true
         ) {
-            $GLOBALS['TL_CSS']['ui.css'] = trim($this->packages->getUrl(
+            $GLOBALS['TL_HEAD']['ui.css'] = '<link rel="stylesheet" data-cmx-ui href="' . $this->packages->getUrl(
                 'ui.css',
+                'kiwi_cmx'
+            ) . '">';
+
+            $GLOBALS['TL_BODY']['frontend.js'] = Template::generateScriptTag($this->packages->getUrl(
+                'frontend.js',
                 'kiwi_cmx',
-            ), '/');
+            ));
 
             $GLOBALS['TL_CSS']['backend.css'] = trim($this->packages->getUrl(
                 'backend.css',
