@@ -1,0 +1,103 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Kiwi\Contao\CmxBundle\Svg;
+
+use enshrined\svgSanitize\Sanitizer;
+
+/**
+ * Sanitises SVG markup that is printed inline into the page (e.g. by the inline_svg() Twig function).
+ *
+ * Uses enshrined/svg-sanitize, the allowlist sanitiser Contao core runs on SVG uploads
+ * (FileUpload, DC_Folder), with remote references removed. <style> is allowed, so CSS
+ * animations keep working (SMIL <animate> is not), but its rules are scoped to the SVG
+ * (see StyleScoper). The SVG is decorative (aria-hidden) unless it declares its
+ * accessibility itself (aria-hidden, role, aria-label or aria-labelledby).
+ */
+class SvgSanitizer
+{
+    public function sanitize(string $markup): ?string
+    {
+        $svg = $this->parse($markup);
+
+        if (null === $svg) {
+            return null;
+        }
+
+        return $this->toMarkup($svg);
+    }
+
+    /**
+     * Returns the sanitised <svg> element, so callers can adjust it before printing it with toMarkup().
+     */
+    public function parse(string $markup): ?\DOMElement
+    {
+        $sanitizer = new Sanitizer();
+        $sanitizer->removeXMLTag(true);
+        $sanitizer->removeRemoteReferences(true);
+
+        $clean = $sanitizer->sanitize($markup);
+
+        if (!\is_string($clean) || '' === $clean) {
+            return null;
+        }
+
+        $previous = libxml_use_internal_errors(true);
+        $document = new \DOMDocument();
+        $loaded = $document->loadXML($clean, LIBXML_NONET);
+        libxml_clear_errors();
+        libxml_use_internal_errors($previous);
+
+        $svg = $document->documentElement;
+
+        if (!$loaded || null === $svg || 'svg' !== strtolower($svg->localName)) {
+            return null;
+        }
+
+        $this->scopeStyles($svg);
+
+        // decorative by default; screen readers get the text next to it
+        if (
+            !$svg->hasAttribute('aria-hidden')
+            && !$svg->hasAttribute('role')
+            && !$svg->hasAttribute('aria-label')
+            && !$svg->hasAttribute('aria-labelledby')
+        ) {
+            $svg->setAttribute('aria-hidden', 'true');
+        }
+
+        return $svg;
+    }
+
+    /**
+     * Only the <svg> element itself, without XML declaration / doctype.
+     */
+    public function toMarkup(\DOMElement $svg): ?string
+    {
+        return $svg->ownerDocument?->saveXML($svg) ?: null;
+    }
+
+    /**
+     * Inline <style> rules apply to the whole page, so they are wrapped in a prelude-less @scope,
+     * whose root is the parent of the <style> element. Each <style> is therefore moved to the root <svg>.
+     */
+    private function scopeStyles(\DOMElement $svg): void
+    {
+        // by local name: an SVG without xmlns has its elements in no namespace
+        $styles = iterator_to_array((new \DOMXPath($svg->ownerDocument))->query('//*[local-name()="style"]'));
+
+        $scoper = new StyleScoper();
+
+        foreach ($styles as $style) {
+            $css = $scoper->scope($style->textContent);
+            $style->textContent = $css;
+
+            if ('' === $css) {
+                $style->parentNode?->removeChild($style);
+            } elseif ($style->parentNode !== $svg) {
+                $svg->insertBefore($style, $svg->firstChild);
+            }
+        }
+    }
+}

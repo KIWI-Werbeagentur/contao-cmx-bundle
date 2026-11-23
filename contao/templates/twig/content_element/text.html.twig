@@ -1,0 +1,13 @@
+{% extends '@Contao/content_element/text.html.twig' %}
+
+{# "Output SVG inline" (tl_content.svgInline): print the SVG markup instead of an <img>,
+   e.g. to animate it with CSS. Falls back to the regular figure if the image is not an SVG
+   or cannot be read. The markup is sanitised in Kiwi\Contao\CmxBundle\Twig\InlineSvgExtension. #}
+{% block text_media %}
+    {% set inline_svg_markup = image and data.svgInline|default ? inline_svg(data.singleSRC) : null %}
+    {% if inline_svg_markup %}
+        <figure class="figure--inline-svg">{{ inline_svg_markup }}</figure>
+    {% else %}
+        {{ parent() }}
+    {% endif %}
+{% endblock %}
