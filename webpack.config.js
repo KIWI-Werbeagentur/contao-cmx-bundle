@@ -13,6 +13,7 @@ Encore
     .disableSingleRuntimeChunk()
 
     .addEntry('backend', './assets/backend.js')
+    .addEntry('nested-content', './assets/nestedContent.js')
     .addStyleEntry('ui', './assets/styles/ui.scss')
 
     //.configureBabel((config) => {

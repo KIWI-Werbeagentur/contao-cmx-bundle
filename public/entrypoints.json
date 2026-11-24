@@ -8,6 +8,14 @@
         "/bundles/kiwicmx/backend.46989416.js"
       ]
     },
+    "nested-content": {
+      "css": [
+        "/bundles/kiwicmx/nested-content.bf1f2613.css"
+      ],
+      "js": [
+        "/bundles/kiwicmx/nested-content.43ab87dd.js"
+      ]
+    },
     "ui": {
       "css": [
         "/bundles/kiwicmx/ui.13096455.css"

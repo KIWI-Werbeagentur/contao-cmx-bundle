@@ -1,0 +1,69 @@
+/* Elementliste im Backend: Kindelemente einer Gruppe als eigene Einträge mit Bedienleiste
+   (Kiwi\Contao\CmxBundle\NestedContent\NestedContentViewListener) */
+.nested-records {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 4px 0;
+  padding-left: 12px;
+  border-left: 2px solid var(--border, #e6e6e8);
+}
+
+.nested-records__record.tl_content {
+  margin: 0;
+  border: 1px solid var(--border, #e6e6e8);
+  border-radius: 4px;
+  background: var(--content-bg, #fff);
+}
+
+.nested-records__record > .inside {
+  padding: 6px 8px;
+}
+
+.nested-records__record--invisible > .inside {
+  opacity: .6;
+}
+
+/* Gruppen bleiben wie alle Vorschauen erst eingeklappt (Höhenbegrenzung der Liste, „…“ zum
+   Ausfahren). Ausgefahren darf der Inhalt überstehen, damit die Menüs der Kindelemente nicht
+   abgeschnitten werden (Contao lässt overflow: hidden und contain: paint auch dann stehen). */
+.cte_content:has(> .cte_preview > .nested-records):not([style*="max-height"]) {
+  overflow: visible !important;
+}
+
+.cte_content:not([style*="max-height"]) > .cte_preview:has(> .nested-records) {
+  contain: none !important;
+}
+
+/* Griff zum Umsortieren, wie der Griff der Liste */
+.nested-records__record .cte_type.draggable {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.nested-records .nested-records__handle {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: grab;
+}
+
+.nested-records__handle:active {
+  cursor: grabbing;
+}
+
+.nested-records__record--dragging {
+  opacity: .4;
+}
+
+/* Bedienleiste und Griff der Kindelemente stehen in der Vorschau der Gruppe: Contao rahmt dort
+   alle Formularelemente ein (.cte_preview button { background; border }) – für die Knöpfe der
+   Bedienleiste, ihr Menü und den Griff wieder aufheben, damit sie wie in der Liste aussehen */
+.nested-records .tl_content_right button,
+.nested-records .tl_content_right input,
+.nested-records .nested-records__handle {
+  background: none;
+  border: 0;
+}
