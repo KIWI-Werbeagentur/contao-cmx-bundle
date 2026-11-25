@@ -15,28 +15,56 @@ use Symfony\Component\HttpFoundation\RequestStack;
  * wird, trägt der Link nested=<Tiefe> (siehe NestedContentViewListener): so viele Gruppen-Ansichten
  * werden für den Rücksprung übersprungen, man landet wieder in dieser Liste. Die Brotkrumen (mit
  * Labels) bleiben unverändert.
+ *
+ * Echter Decorator: alle Aufrufe gehen an den inneren Service, damit weitere Decorators anderer Bundles
+ * erhalten bleiben. Die Klasse muss trotzdem von DcaUrlAnalyzer erben (Typ der Core-Services); die
+ * Elternklasse wird mit dem Zustand des inneren Services initialisiert, für Methoden, die es hier noch
+ * nicht gibt. Läuft als äußerster Decorator (decoration_priority in nested_content.yaml), damit
+ * Decorators, die den Zustand des Core-Services per Reflection übernehmen, weiterhin genau diesen bekommen.
  */
 class NestedBackUrlAnalyzer extends DcaUrlAnalyzer
 {
     public const QUERY_PARAMETER = 'nested';
 
-    private RequestStack|null $requestStack = null;
+    public function __construct(
+        private readonly DcaUrlAnalyzer $inner,
+        private readonly RequestStack $requestStack,
+    ) {
+        $args = [];
 
-    public function setRequestStack(RequestStack $requestStack): void
+        // über die deklarierende Klasse lesen, damit es auch geht, wenn der innere Service selbst ein Decorator ist
+        foreach ((new \ReflectionClass(DcaUrlAnalyzer::class))->getConstructor()?->getParameters() ?? [] as $parameter) {
+            $args[] = (new \ReflectionProperty(DcaUrlAnalyzer::class, $parameter->getName()))->getValue($inner);
+        }
+
+        parent::__construct(...$args);
+    }
+
+    public function getCurrentTableId(Request|string|null $request = null): array
     {
-        $this->requestStack = $requestStack;
+        return $this->inner->getCurrentTableId($request);
+    }
+
+    public function getEditUrl(string $table, int $id): string|null
+    {
+        return $this->inner->getEditUrl($table, $id);
+    }
+
+    public function getViewUrl(string $table, int $id): string|null
+    {
+        return $this->inner->getViewUrl($table, $id);
     }
 
     public function getTrail(Request|string|null $request = null, int $limit = PHP_INT_MAX, bool $withTreeTrail = false, bool $loadLabels = true): array
     {
-        $depth = (int) $this->requestStack?->getCurrentRequest()?->query->get(self::QUERY_PARAMETER);
+        $depth = (int) $this->requestStack->getCurrentRequest()?->query->get(self::QUERY_PARAMETER);
 
         // nur für den Rücksprung (getReferer lädt keine Labels) und nur bei Aufruf aus einer verschachtelten Liste
         if (null !== $request || $loadLabels || $depth < 1) {
-            return parent::getTrail($request, $limit, $withTreeTrail, $loadLabels);
+            return $this->inner->getTrail($request, $limit, $withTreeTrail, $loadLabels);
         }
 
-        $trail = parent::getTrail($request, PHP_INT_MAX, $withTreeTrail, $loadLabels);
+        $trail = $this->inner->getTrail($request, PHP_INT_MAX, $withTreeTrail, $loadLabels);
         $current = array_pop($trail);
 
         // die letzten <Tiefe> Einträge vor dem Element sind die Ansichten der Gruppen dazwischen
