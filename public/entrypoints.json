@@ -1,5 +1,10 @@
 {
   "entrypoints": {
+    "frontend": {
+      "js": [
+        "/bundles/kiwicmx/frontend.4f6bef34.js"
+      ]
+    },
     "backend": {
       "css": [
         "/bundles/kiwicmx/backend.9ab34444.css"
@@ -16,9 +21,19 @@
         "/bundles/kiwicmx/nested-content.43ab87dd.js"
       ]
     },
+    "livePreview": {
+      "js": [
+        "/bundles/kiwicmx/livePreview.0a27d603.js"
+      ]
+    },
+    "livePreviewFe": {
+      "js": [
+        "/bundles/kiwicmx/livePreviewFe.1fa74d3a.js"
+      ]
+    },
     "ui": {
       "css": [
-        "/bundles/kiwicmx/ui.13096455.css"
+        "/bundles/kiwicmx/ui.1938f5a0.css"
       ]
     }
   }
