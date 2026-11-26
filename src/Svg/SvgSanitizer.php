@@ -12,14 +12,15 @@ use enshrined\svgSanitize\Sanitizer;
  * Uses enshrined/svg-sanitize, the allowlist sanitiser Contao core runs on SVG uploads
  * (FileUpload, DC_Folder), with remote references removed. <style> is allowed, so CSS
  * animations keep working (SMIL <animate> is not), but its rules are scoped to the SVG
- * (see StyleScoper). The SVG is decorative (aria-hidden) unless it declares its
- * accessibility itself (aria-hidden, role, aria-label or aria-labelledby).
+ * (see StyleScoper). Unless the SVG declares its accessibility itself (aria-hidden, role,
+ * aria-label or aria-labelledby), it gets role="img" and the given label as aria-label (like
+ * the alt text of an <img>), or aria-hidden without a label.
  */
 class SvgSanitizer
 {
-    public function sanitize(string $markup): ?string
+    public function sanitize(string $markup, ?string $label = null): ?string
     {
-        $svg = $this->parse($markup);
+        $svg = $this->parse($markup, $label);
 
         if (null === $svg) {
             return null;
@@ -31,7 +32,7 @@ class SvgSanitizer
     /**
      * Returns the sanitised <svg> element, so callers can adjust it before printing it with toMarkup().
      */
-    public function parse(string $markup): ?\DOMElement
+    public function parse(string $markup, ?string $label = null): ?\DOMElement
     {
         $sanitizer = new Sanitizer();
         $sanitizer->removeXMLTag(true);
@@ -57,14 +58,19 @@ class SvgSanitizer
 
         $this->scopeStyles($svg);
 
-        // decorative by default; screen readers get the text next to it
         if (
             !$svg->hasAttribute('aria-hidden')
             && !$svg->hasAttribute('role')
             && !$svg->hasAttribute('aria-label')
             && !$svg->hasAttribute('aria-labelledby')
         ) {
-            $svg->setAttribute('aria-hidden', 'true');
+            if (null !== $label && '' !== trim($label)) {
+                $svg->setAttribute('role', 'img');
+                $svg->setAttribute('aria-label', $label);
+            } else {
+                // decorative, like <img alt="">; screen readers get the text next to it
+                $svg->setAttribute('aria-hidden', 'true');
+            }
         }
 
         return $svg;

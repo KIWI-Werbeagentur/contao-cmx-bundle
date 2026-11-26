@@ -15,13 +15,14 @@ use Twig\Markup;
 use Twig\TwigFunction;
 
 /**
- * inline_svg(source): returns the markup of an SVG file from the files directory, so it
+ * inline_svg(source, label): returns the markup of an SVG file from the files directory, so it
  * can be printed inline (e.g. to animate it with CSS). Returns null if the source is not
  * an SVG or cannot be read (also for a stale UUID of a deleted file), so templates can
  * fall back to the regular <img>.
  *
  * The source can be a binary UUID (as stored in tl_content.singleSRC), a UUID string or
- * a path relative to the files directory.
+ * a path relative to the files directory. The optional label (e.g. the image's alt text) becomes
+ * the SVG's accessible name; without one, the SVG is decorative (see SvgSanitizer).
  *
  * Inline SVG is part of the page, so the markup is sanitised (see SvgSanitizer). It is returned
  * as Twig\Markup, so it is not escaped, also when stored in a variable first.
@@ -41,7 +42,7 @@ class InlineSvgExtension extends AbstractExtension
         ];
     }
 
-    public function inlineSvg(mixed $source): ?Markup
+    public function inlineSvg(mixed $source, ?string $label = null): ?Markup
     {
         $location = $this->toLocation($source);
 
@@ -61,7 +62,7 @@ class InlineSvgExtension extends AbstractExtension
             return null;
         }
 
-        $markup = $this->sanitizer->sanitize($markup);
+        $markup = $this->sanitizer->sanitize($markup, $label);
 
         return null === $markup ? null : new Markup($markup, 'UTF-8');
     }

@@ -11,7 +11,7 @@ Ist bei einem Text-Element „SVG inline ausgeben“ (`tl_content.svgInline`) ak
 
 Das Markup wird bereinigt, `<style>` bleibt erhalten und wirkt nur innerhalb der Grafik. Namen aus `@keyframes` und `@font-face` gelten aber seitenweit, SVGs sollten deshalb eindeutige Namen verwenden (z. B. `check-circle-draw` statt `fadeIn`).
 
-Ohne eigene Accessibility-Angaben (`aria-hidden`, `role`, `aria-label`, `aria-labelledby`) bekommt das SVG `aria-hidden="true"`.
+Ohne eigene Accessibility-Angaben (`aria-hidden`, `role`, `aria-label`, `aria-labelledby`) bekommt das SVG den Alternativtext des Bildes als `aria-label` (mit `role="img"`), ohne Alternativtext `aria-hidden="true"`.
 
 Die Checkbox erscheint nur bei unterstützen Elementtypen (Standard: `text`).
 
@@ -24,7 +24,7 @@ Weitere unterstützte Elemente können per DCA-Eintrag hinzugefügt werden:
 $GLOBALS['TL_DCA']['tl_content']['fields']['svgInline']['showForTypes'][] = 'fact';
 ```
 
-In eigenen Templates liefert `inline_svg(source)` das bereinigte Markup oder `null` (Quelle: binäre UUID, UUID-String oder Pfad unterhalb von `files/`):
+In eigenen Templates liefert `inline_svg(source, label)` das bereinigte Markup oder `null` (Quelle: binäre UUID, UUID-String oder Pfad unterhalb von `files/`; `label` optional, z. B. der Alternativtext):
 
 ```twig
 {% set svg = inline_svg(data.singleSRC) %}
