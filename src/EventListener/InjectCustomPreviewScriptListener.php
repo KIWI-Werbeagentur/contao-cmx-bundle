@@ -10,11 +10,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
- * When the frontend preview iframe loads a page with ?_clp=1, injects a tiny
- * postMessage listener + highlight CSS before </body>. This enables the backend
- * JS to scroll to and briefly outline the currently edited article/element.
+ * Adds livePreviewFe.js to the page in the live preview iframe (?_clp=1). It
+ * registers the article badge buttons "show content elements" and "show page";
+ * their translated titles are passed as data attributes of the script tag.
  *
- * Only fires for frontend HTML responses — never for backend, JSON, or assets.
+ * Called by the live preview bundle for front end HTML responses only.
  */
 #[AsHook('injectPreviewScript')]
 class InjectCustomPreviewScriptListener
