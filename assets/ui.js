@@ -66,12 +66,11 @@
             el.style.width = r.width + 'px';
             el.style.height = r.height + 'px';
 
-            // do not shift badge out of view
+            // do not shift badge above the top of the document, measure it in its default position
             const b = el.querySelector('.cmx--ui__badge');
+            b.classList.remove('cmx--ui__badge--inside');
             const bTop = window.scrollY + b.getBoundingClientRect().top;
-            if (bTop < 0) {
-                b.classList.add('cmx--ui__badge--inside');
-            }
+            b.classList.toggle('cmx--ui__badge--inside', bTop < 0);
         });
     }
 })();
