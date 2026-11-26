@@ -8,17 +8,32 @@
     });
 
     document.addEventListener('DOMContentLoaded', () => {
+        // the UI is only shown in the front end preview (the toolbar sets body[data-cmx-ui])
         const toolbarWrapper = document.getElementsByTagName('cto-toolbar')[0];
-        const toolbar = toolbarWrapper.shadowRoot.querySelector('.cto-toolbar');
+        const toolbar = toolbarWrapper?.shadowRoot?.querySelector('.cto-toolbar');
+
+        if (!toolbar) {
+            return;
+        }
+
         toolbar.addEventListener('cto-toolbar-loaded', (e) => {
             // prepare ui context as shadow DOM
             const cmxUi = document.createElement('cmx-ui');
             document.querySelector('body').appendChild(cmxUi);
             cmxUi.attachShadow({mode: 'open'});
 
-            // add ui context to shadow DOM
-            const uiEls = document.querySelectorAll('.cmx--ui[data-cmx-ui]');
-            uiEls.forEach((el) => {
+            // pair each ui context with its article wrapper before moving it out of the article,
+            // articles without markup have no wrapper to attach to
+            const uiEls = [];
+            document.querySelectorAll('.cmx--ui[data-cmx-ui]').forEach((el) => {
+                const article = el.closest('.mod_article');
+
+                if (!article) {
+                    el.remove();
+                    return;
+                }
+
+                uiEls.push({el, article});
                 cmxUi.shadowRoot.appendChild(el);
             });
 
@@ -35,17 +50,16 @@
             cmxUi.shadowRoot.adoptedStyleSheets = [sheet];
 
             // show UI after loading is finished
-            uiEls.forEach((el) => {
+            uiEls.forEach(({el}) => {
                 el.style.display = el.dataset.cmxDisplay;
-                el.dataset.cmxDisplay = null;
+                delete el.dataset.cmxDisplay;
             });
         });
     });
 
     function repositionCmxUi(uiEls) {
-        uiEls.forEach((el) => {
-            const a = document.querySelector(`.mod_article[data-cmx-ui="${el.dataset.cmxUi}"]`);
-            const r = a.getBoundingClientRect();
+        uiEls.forEach(({el, article}) => {
+            const r = article.getBoundingClientRect();
             // position element relative to viewport boundaries, respecting scroll distance
             el.style.top = window.scrollY + r.top + 'px';
             el.style.left = window.scrollX + r.left + 'px';
