@@ -18,14 +18,17 @@
         "php": "^8.3",
         "ext-dom": "*",
         "symfony/css-selector": "^7.4 || ^8.0",
-        "contao/core-bundle": "^5.3",
-        "think-digital-agency/contao-live-preview": "^3.1"
+        "contao/core-bundle": "^5.3"
+    },
+    "suggest": {
+        "think-digital-agency/contao-live-preview": "Adds the CMX article actions to the live preview sidebar"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.0"
     },
     "conflict": {
-        "contao/manager-plugin": "<2.0 || >=3.0"
+        "contao/manager-plugin": "<2.0 || >=3.0",
+        "think-digital-agency/contao-live-preview": "<3.1"
     },
     "autoload": {
         "psr-4" : {
