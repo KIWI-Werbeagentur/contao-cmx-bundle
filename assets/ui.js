@@ -37,8 +37,12 @@
                 cmxUi.shadowRoot.appendChild(el);
             });
 
+            // follow layout changes (lazy images, fonts, accordions, viewport): the root catches
+            // articles moved by content above them, the articles their own size changes
             repositionCmxUi(uiEls);
-            window.addEventListener('resize', () => repositionCmxUi(uiEls));
+            const observer = new ResizeObserver(() => repositionCmxUi(uiEls));
+            observer.observe(document.documentElement);
+            uiEls.forEach(({article}) => observer.observe(article));
 
             // add styles to shadow DOM
             let cmxUiCss = '';

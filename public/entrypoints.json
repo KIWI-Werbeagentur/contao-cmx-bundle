@@ -2,7 +2,7 @@
   "entrypoints": {
     "frontend": {
       "js": [
-        "/bundles/kiwicmx/frontend.ec73afba.js"
+        "/bundles/kiwicmx/frontend.4f6bef34.js"
       ]
     },
     "backend": {
