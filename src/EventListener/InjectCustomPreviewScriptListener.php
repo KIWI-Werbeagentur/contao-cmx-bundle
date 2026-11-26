@@ -7,6 +7,7 @@ namespace Kiwi\Contao\CmxBundle\EventListener;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Contracts\Translation\TranslatorInterface;
 
 /**
  * When the frontend preview iframe loads a page with ?_clp=1, injects a tiny
@@ -18,8 +19,10 @@ use Symfony\Component\HttpFoundation\Response;
 #[AsHook('injectPreviewScript')]
 class InjectCustomPreviewScriptListener
 {
-    public function __construct(private readonly Packages $packages)
-    {
+    public function __construct(
+        private readonly Packages $packages,
+        private readonly TranslatorInterface $translator,
+    ) {
     }
 
     public function __invoke(Response $response): Response
@@ -31,7 +34,12 @@ class InjectCustomPreviewScriptListener
             'livePreviewFe.js',
             'kiwi_cmx',
         );
-        $js   = '<script src="' . htmlspecialchars($url, \ENT_QUOTES, 'UTF-8') . '" defer></script>';
+        $js = sprintf(
+            '<script src="%s" data-title-children="%s" data-title-page="%s" defer></script>',
+            htmlspecialchars($url, \ENT_QUOTES, 'UTF-8'),
+            htmlspecialchars($this->translator->trans('ui.children', [], 'contao_default'), \ENT_QUOTES, 'UTF-8'),
+            htmlspecialchars($this->translator->trans('ui.page', [], 'contao_default'), \ENT_QUOTES, 'UTF-8'),
+        );
 
         $response->setContent(str_replace('</body>', $js . '</body>', $content));
         return $response;
