@@ -16,21 +16,24 @@
     }, 50);
 
     const registerHandlers = () => {
-        // Change core edit action for tl_article to target article edit view (not list)
-        CLP_BE.on('clp:edit', (d) => {
-            const {table, id, parentTable} = d;
-            if (!table || !id) return;
-            let params;
-            if (table === 'tl_article') {
-                params = new URLSearchParams({do: 'article', table: 'tl_article', act: 'edit', id: String(id)});
-            } else return;
+        // Change core edit action for tl_article to target article edit view (not list). Replaces the core
+        // handler (same id) and passes all other tables on to it, a parallel handler would navigate twice.
+        const coreEdit = CLP_BE._h['clp:edit']?.get('clp:edit');
+        CLP_BE.on('clp:edit', (d, e) => {
+            const {table, id} = d;
+            if (table !== 'tl_article') {
+                coreEdit?.(d, e);
+                return;
+            }
+            if (!id) return;
+            const params = new URLSearchParams({do: 'article', table: 'tl_article', act: 'edit', id: String(id)});
             const url = window.location.pathname + '?' + params.toString();
             if (window.Turbo) {
                 Turbo.visit(url);
             } else {
                 window.location.href = url;
             }
-        }, 'cmx:edit');
+        });
         // Handle new action for article list view
         CLP_BE.on('cmx:edit-children', (d) => {
             const {table, id, parentTable} = d;
