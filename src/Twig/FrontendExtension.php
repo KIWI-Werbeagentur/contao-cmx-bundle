@@ -22,9 +22,12 @@ class FrontendExtension extends AbstractExtension
         ];
     }
 
-    public function getFile($uuid)
+    /**
+     * The file's data, or null if there is no such file (e.g. deleted in the file manager).
+     */
+    public function getFile($uuid): ?array
     {
-        return FilesModel::findByPk($uuid)->row();
+        return FilesModel::findByPk($uuid)?->row();
     }
 
     public function getContents($uuid)

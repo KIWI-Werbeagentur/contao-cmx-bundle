@@ -2,7 +2,7 @@
   "entrypoints": {
     "frontend": {
       "js": [
-        "/bundles/kiwicmx/frontend.709c015c.js"
+        "/bundles/kiwicmx/frontend.cd6a5f01.js"
       ]
     },
     "backend": {
@@ -11,6 +11,14 @@
       ],
       "js": [
         "/bundles/kiwicmx/backend.46989416.js"
+      ]
+    },
+    "nested-content": {
+      "css": [
+        "/bundles/kiwicmx/nested-content.bf1f2613.css"
+      ],
+      "js": [
+        "/bundles/kiwicmx/nested-content.43ab87dd.js"
       ]
     },
     "livePreview": {

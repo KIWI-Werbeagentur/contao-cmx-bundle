@@ -1,0 +1,39 @@
+# Verschachtelte Kindelemente in der Elementliste (Kiwi\Contao\CmxBundle\NestedContent). Wird nur ab Contao 5.7
+# geladen (siehe ContaoManager\Plugin), da die Services Core-Services dieser Version dekorieren.
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+
+  # ersetzt den Core-Listener für Label und Vorschau der Inhaltselemente (gleiche Service-ID, damit
+  # die registrierten Callbacks weiter greifen); nicht autokonfiguriert, sonst würden die Callbacks
+  # doppelt registriert
+  Kiwi\Contao\CmxBundle\NestedContent\NestedContentViewListener:
+    decorates: contao.listener.data_container.content_element_view
+    autoconfigure: false
+    arguments:
+      $framework: '@contao.framework'
+      $translator: '@translator'
+      $connection: '@database_connection'
+      $compositor: '@contao.fragment.compositor'
+      $operationsBuilder: '@contao.data_container.operations_builder'
+
+  Kiwi\Contao\CmxBundle\NestedContent\NestedContentAssetsListener:
+    autoconfigure: false
+    arguments:
+      - '@assets.packages'
+      - '@contao.routing.scope_matcher'
+      - '@request_stack'
+    tags:
+      - { name: contao.hook, hook: loadDataContainer }
+
+  # Rücksprung aus der Bearbeitung eines Kindelements in die Übersicht (statt in die Gruppe); als äußerster
+  # Decorator, damit andere Decorators des Services (die den Core-Service per Reflection auslesen) weiter
+  # direkt den Core-Service bekommen
+  Kiwi\Contao\CmxBundle\NestedContent\NestedBackUrlAnalyzer:
+    decorates: contao.data_container.dca_url_analyzer
+    decoration_priority: -10
+    autoconfigure: false
+    arguments:
+      - '@.inner'
+      - '@request_stack'

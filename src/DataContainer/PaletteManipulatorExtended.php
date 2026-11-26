@@ -6,14 +6,26 @@ use Contao\Controller;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\StringUtil;
 
+/**
+ * Contao's PaletteManipulator declares its fluent builder methods `: self`, which binds to the
+ * base class and drops the subclass type mid-chain — so after e.g. ->addField() static analysis
+ * no longer sees this class's own applyToAllPalettes()/applyToPalettes(). These @method tags
+ * re-type the inherited builders to `static` so the fluent chain keeps the subclass type.
+ * They are analysis-only hints: the methods run unchanged at runtime, which avoids re-declaring
+ * (and hard-coupling to) the base signature across the supported contao/core-bundle range.
+ *
+ * @method static addField(array|string $name, array|string|null $parent = null, string $position = self::POSITION_AFTER, \Closure|array|string|null $fallback = null, string $fallbackPosition = self::POSITION_APPEND)
+ * @method static removeField(array|string $name, string|null $legend = null)
+ * @method static applyToSubpalette(string $name, string $table)
+ */
 class PaletteManipulatorExtended extends PaletteManipulator
 {
-    public static function create(): self
+    public static function create(): static
     {
-        return new self();
+        return new static();
     }
 
-    public function applyToAllPalettes(string $table, array $arrExceptions = []): object
+    public function applyToAllPalettes(string $table, array $arrExceptions = []): static
     {
         foreach ($GLOBALS['TL_DCA'][$table]['palettes'] as $strPalette => $varFields) {
             if (!is_string($varFields) || in_array($strPalette, ($arrExceptions ?? []))) continue;
@@ -23,7 +35,7 @@ class PaletteManipulatorExtended extends PaletteManipulator
         return $this;
     }
 
-    public function applyToPalettes(array $names, string $table): self
+    public function applyToPalettes(array $names, string $table): static
     {
         foreach ($names as $name) {
             if(!($GLOBALS['TL_DCA'][$table]['palettes'][$name] ?? false)) continue;

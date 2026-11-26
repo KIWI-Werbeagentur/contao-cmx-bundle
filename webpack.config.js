@@ -14,6 +14,7 @@ Encore
 
     .addEntry('frontend', './assets/ui.js')
     .addEntry('backend', './assets/backend.js')
+    .addEntry('nested-content', './assets/nestedContent.js')
     .addEntry('livePreview', './assets/livePreview.js')
     .addEntry('livePreviewFe', './assets/livePreviewFe.js')
     .addStyleEntry('ui', './assets/styles/ui.scss')
