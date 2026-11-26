@@ -1,7 +1,7 @@
 {% trans_default_domain "contao_default" %}
 
 {% block content %}
-    {% if not app.request().query.get('_clp') and (app.environment == "dev" or isPreview()) %}
+    {% if not app.request().query.get('_clp') and isPreview() %}
         {% set attributes = attrs()
             .addClass('cmx--ui')
             .setIfExists('data-cmx-ui', article.id)
