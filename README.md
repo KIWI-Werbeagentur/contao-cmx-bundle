@@ -13,7 +13,7 @@ Das Markup wird bereinigt, `<style>` bleibt erhalten und wirkt nur innerhalb der
 
 Ohne eigene Accessibility-Angaben (`aria-hidden`, `role`, `aria-label`, `aria-labelledby`) bekommt das SVG den Alternativtext des Bildes als `aria-label` (mit `role="img"`), ohne Alternativtext `aria-hidden="true"`.
 
-Die Checkbox erscheint nur bei unterstützen Elementtypen (Standard: `text`).
+Die Checkbox erscheint nur bei unterstützten Elementtypen (Standard: `text`).
 
 ### Implementierung in eigene Elemente
 

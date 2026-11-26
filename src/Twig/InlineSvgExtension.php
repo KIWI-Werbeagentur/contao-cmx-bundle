@@ -21,8 +21,10 @@ use Twig\TwigFunction;
  * fall back to the regular <img>.
  *
  * The source can be a binary UUID (as stored in tl_content.singleSRC), a UUID string or
- * a path relative to the files directory. The optional label (e.g. the image's alt text) becomes
- * the SVG's accessible name; without one, the SVG is decorative (see SvgSanitizer).
+ * a path relative to the files directory. The optional label (e.g. the image's alt text) is the
+ * fallback accessible name: it is only used if the SVG declares no accessibility attributes of
+ * its own (aria-hidden, role, aria-label, aria-labelledby). Without either, the SVG is decorative
+ * (see SvgSanitizer).
  *
  * Inline SVG is part of the page, so the markup is sanitised (see SvgSanitizer). It is returned
  * as Twig\Markup, so it is not escaped, also when stored in a variable first.
