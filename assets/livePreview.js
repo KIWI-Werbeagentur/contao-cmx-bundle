@@ -15,6 +15,18 @@
         }
     }, 50);
 
+    // navigate the back end like the core handlers: the sidebar holds the back end entry point, the current
+    // path may be a sub-route (e.g. /contao/template-studio) that 404s with these parameters
+    const visit = (params) => {
+        const beUrl = document.getElementById('clp-right')?.dataset.clpBackendUrl || '/contao';
+        const url = beUrl + '?' + params.toString();
+        if (window.Turbo) {
+            Turbo.visit(url);
+        } else {
+            window.location.href = url;
+        }
+    };
+
     const registerHandlers = () => {
         // Change core edit action for tl_article to target article edit view (not list). Replaces the core
         // handler (same id) and passes all other tables on to it, a parallel handler would navigate twice.
@@ -27,12 +39,7 @@
             }
             if (!id) return;
             const params = new URLSearchParams({do: 'article', table: 'tl_article', act: 'edit', id: String(id)});
-            const url = window.location.pathname + '?' + params.toString();
-            if (window.Turbo) {
-                Turbo.visit(url);
-            } else {
-                window.location.href = url;
-            }
+            visit(params);
         });
         // Handle new action for article list view
         CLP_BE.on('cmx:edit-children', (d) => {
@@ -42,12 +49,7 @@
             if (table === 'tl_article') {
                 params = new URLSearchParams({do: 'article', table: 'tl_content', id: String(id)});
             } else return;
-            const url = window.location.pathname + '?' + params.toString();
-            if (window.Turbo) {
-                Turbo.visit(url);
-            } else {
-                window.location.href = url;
-            }
+            visit(params);
         });
         CLP_BE.on('cmx:page-children', (d,e) => {
             const {table, pageId} = d;
@@ -57,12 +59,7 @@
             if (table === 'tl_article') {
                 params = new URLSearchParams({do: 'article', pn: String(pageId), rt});
             } else return;
-            const url = window.location.pathname + '?' + params.toString();
-            if (window.Turbo) {
-                Turbo.visit(url);
-            } else {
-                window.location.href = url;
-            }
+            visit(params);
         });
     }
 })();
