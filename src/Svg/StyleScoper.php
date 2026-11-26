@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Kiwi\Contao\CmxBundle\Svg;
 
 /**
- * Scopes the CSS of an inline SVG <style> element to the SVG, so it cannot restyle the page.
+ * Scopes the CSS of an inline SVG <style> element to the SVG, so its rules cannot match page elements.
  *
  * The rules are wrapped in a prelude-less @scope (scope root: the parent of the <style> element),
  * and every selector becomes ":where(:scope, :scope *):is(<selector>)". The explicit :scope keeps
@@ -14,6 +14,12 @@ namespace Kiwi\Contao\CmxBundle\Svg;
  * the matched element has to be inside the SVG. Specificity is unchanged (:where() adds none).
  *
  * Browsers without @scope support drop the rules: the graphic stays unstyled, the page is safe.
+ *
+ * Names defined by @keyframes and @font-face stay document-wide: a colliding name (e.g. "fadeIn")
+ * replaces the page's animation or font, so SVGs should use distinctive names.
+ *
+ * Pseudo-elements are not valid inside :is(), so rules like ".ring::before" are dropped. SVG
+ * renders no generated content, so this only affects rare cases such as ::selection.
  */
 class StyleScoper
 {

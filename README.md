@@ -9,7 +9,9 @@ KIWI. Contao CMX-Bundle
 
 Ist bei einem Text-Element „SVG inline ausgeben“ (`tl_content.svgInline`) aktiv und das Bild ein SVG, schreibt das Template `content_element/text.html.twig` das Markup direkt in die Seite.
 
-Das Markup wird bereinigt, `<style>` bleibt erhalten. Ohne eigene Accessibility-Angaben (`aria-hidden`, `role`, `aria-label`, `aria-labelledby`) bekommt das SVG `aria-hidden="true"`.
+Das Markup wird bereinigt, `<style>` bleibt erhalten und wirkt nur innerhalb der Grafik. Namen aus `@keyframes` und `@font-face` gelten aber seitenweit, SVGs sollten deshalb eindeutige Namen verwenden (z. B. `check-circle-draw` statt `fadeIn`).
+
+Ohne eigene Accessibility-Angaben (`aria-hidden`, `role`, `aria-label`, `aria-labelledby`) bekommt das SVG `aria-hidden="true"`.
 
 Die Checkbox erscheint nur bei unterstützen Elementtypen (Standard: `text`).
 

@@ -80,7 +80,8 @@ class SvgSanitizer
 
     /**
      * Inline <style> rules apply to the whole page, so they are wrapped in a prelude-less @scope,
-     * whose root is the parent of the <style> element. Each <style> is therefore moved to the root <svg>.
+     * whose root is the parent of the <style> element. Each <style> is therefore moved to the root <svg>
+     * (the position of a <style> element doesn't affect rendering).
      */
     private function scopeStyles(\DOMElement $svg): void
     {
@@ -93,10 +94,11 @@ class SvgSanitizer
             $css = $scoper->scope($style->textContent);
             $style->textContent = $css;
 
+            // appended in document order, so the cascade between the styles stays the same
             if ('' === $css) {
                 $style->parentNode?->removeChild($style);
-            } elseif ($style->parentNode !== $svg) {
-                $svg->insertBefore($style, $svg->firstChild);
+            } else {
+                $svg->appendChild($style);
             }
         }
     }

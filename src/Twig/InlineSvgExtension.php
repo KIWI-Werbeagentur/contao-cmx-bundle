@@ -7,6 +7,7 @@ namespace Kiwi\Contao\CmxBundle\Twig;
 use Contao\CoreBundle\Filesystem\Dbafs\UnableToResolveUuidException;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemException;
 use Contao\CoreBundle\Filesystem\VirtualFilesystemInterface;
+use Contao\Validator;
 use Kiwi\Contao\CmxBundle\Svg\SvgSanitizer;
 use Symfony\Component\Uid\Uuid;
 use Twig\Extension\AbstractExtension;
@@ -72,7 +73,7 @@ class InlineSvgExtension extends AbstractExtension
         }
 
         // binary UUID from the database
-        if (16 === \strlen($source) && !ctype_print($source)) {
+        if (Validator::isBinaryUuid($source)) {
             return Uuid::fromBinary($source);
         }
 
