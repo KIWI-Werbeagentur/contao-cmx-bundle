@@ -7,6 +7,7 @@ namespace Kiwi\Contao\CmxBundle\DataContainer;
 use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
+use Contao\Input;
 
 /**
  * tl_content.svgInline sits in the shared addImage subpalette, but only templates that render
@@ -22,7 +23,8 @@ class SvgInlineField
     public function __invoke(DataContainer $dc): void
     {
         $types = $GLOBALS['TL_DCA']['tl_content']['fields']['svgInline']['showForTypes'] ?? [];
-        $record = $dc->id ? $dc->getCurrentRecord() : null;
+        // only the edit view has a record id; elsewhere "id" can be the parent (e.g. the article in the list view)
+        $record = 'edit' === Input::get('act') && $dc->id ? $dc->getCurrentRecord() : null;
 
         if (null !== $record && \in_array($record['type'], $types, true) && !$this->isLegacyTemplate($record['customTpl'])) {
             return;
