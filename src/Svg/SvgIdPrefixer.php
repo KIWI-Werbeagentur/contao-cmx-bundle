@@ -12,7 +12,16 @@ namespace Kiwi\Contao\CmxBundle\Svg;
  */
 class SvgIdPrefixer
 {
-    private const ID_LIST_ATTRIBUTES = ['aria-labelledby', 'aria-describedby', 'aria-controls', 'aria-owns', 'aria-flowto', 'aria-details'];
+    private const ID_LIST_ATTRIBUTES = [
+        'aria-activedescendant',
+        'aria-controls',
+        'aria-describedby',
+        'aria-details',
+        'aria-errormessage',
+        'aria-flowto',
+        'aria-labelledby',
+        'aria-owns',
+    ];
 
     /**
      * @param array<string, string> $map old id => new id
