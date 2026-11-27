@@ -22,11 +22,15 @@
         "enshrined/svg-sanitize": "^1.0",
         "symfony/uid": "^6.4 || ^7.0 || ^8.0"
     },
+    "suggest": {
+        "think-digital-agency/contao-live-preview": "Adds the CMX article actions to the live preview sidebar"
+    },
     "require-dev": {
         "contao/manager-plugin": "^2.0"
     },
     "conflict": {
-        "contao/manager-plugin": "<2.0 || >=3.0"
+        "contao/manager-plugin": "<2.0 || >=3.0",
+        "think-digital-agency/contao-live-preview": "<3.1"
     },
     "autoload": {
         "psr-4" : {

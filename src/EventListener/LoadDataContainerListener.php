@@ -6,6 +6,7 @@ namespace Kiwi\Contao\CmxBundle\EventListener;
 
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\Routing\ScopeMatcher;
+use Contao\Template;
 use Symfony\Component\Asset\Packages;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -24,18 +25,28 @@ class LoadDataContainerListener
     public function __invoke(string $strTable): void
     {
         $request = $this->requestStack->getCurrentRequest();
+        $isPreview = $request?->attributes->get('_preview') === true;
+
+        // the article UI only works with the front end preview toolbar
+        if ($isPreview) {
+            $GLOBALS['TL_HEAD']['ui.css'] = '<link rel="stylesheet" data-cmx-ui href="' . $this->packages->getUrl(
+                'ui.css',
+                'kiwi_cmx',
+            ) . '">';
+
+            $GLOBALS['TL_BODY']['frontend.js'] = Template::generateScriptTag($this->packages->getUrl(
+                'frontend.js',
+                'kiwi_cmx',
+            ));
+        }
+
         if (
             $this->scopeMatcher->isBackendRequest($request ?? Request::create(''))
             ||
             $this->environment === 'dev'
             ||
-            $request?->attributes->get('_preview') === true
+            $isPreview
         ) {
-            $GLOBALS['TL_CSS']['ui.css'] = trim($this->packages->getUrl(
-                'ui.css',
-                'kiwi_cmx',
-            ), '/');
-
             $GLOBALS['TL_CSS']['backend.css'] = trim($this->packages->getUrl(
                 'backend.css',
                 'kiwi_cmx',
