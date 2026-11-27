@@ -32,3 +32,9 @@ services:
       - '@router'
       - '@?translator'
       - '@security.helper'
+  Kiwi\Contao\CmxBundle\Svg\SvgSanitizer: ~
+  Kiwi\Contao\CmxBundle\Twig\InlineSvgExtension:
+    arguments:
+      - '@contao.filesystem.virtual.files'
+      - '@Kiwi\Contao\CmxBundle\Svg\SvgSanitizer'
+  Kiwi\Contao\CmxBundle\DataContainer\SvgInlineField: ~
