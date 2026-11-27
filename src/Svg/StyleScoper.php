@@ -15,8 +15,10 @@ namespace Kiwi\Contao\CmxBundle\Svg;
  *
  * Browsers without @scope support drop the rules: the graphic stays unstyled, the page is safe.
  *
- * Names defined by @keyframes and @font-face stay document-wide: a colliding name (e.g. "fadeIn")
- * replaces the page's animation or font, so SVGs should use distinctive names.
+ * Names defined by @keyframes, @font-face and @property stay document-wide: a colliding name
+ * (e.g. "fadeIn") replaces the page's animation, font or custom property registration, so SVGs
+ * should use distinctive names. :root rules no longer match once the SVG is inline (:root is
+ * <html> then); use the svg element or a class on it instead.
  *
  * With an SvgIdPrefixer, #id selectors and url(#id) references follow the prefixed ids.
  *
