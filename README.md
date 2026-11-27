@@ -9,7 +9,7 @@ KIWI. Contao CMX-Bundle
 
 Ist bei einem Text-Element „SVG inline ausgeben“ (`tl_content.svgInline`) aktiv und das Bild ein SVG, schreibt das Template `content_element/text.html.twig` das Markup direkt in die Seite.
 
-Das Markup wird bereinigt, `<style>` bleibt erhalten und wirkt nur innerhalb der Grafik. Namen aus `@keyframes` und `@font-face` gelten aber seitenweit, SVGs sollten deshalb eindeutige Namen verwenden (z. B. `check-circle-draw` statt `fadeIn`).
+Das Markup wird bereinigt, `<style>` bleibt erhalten und wirkt nur innerhalb der Grafik. Namen aus `@keyframes` und `@font-face` gelten aber seitenweit, SVGs sollten deshalb eindeutige Namen verwenden (z. B. `check-circle-draw` statt `fadeIn`). IDs im SVG bekommen pro Ausgabe ein eindeutiges Präfix, Verweise darauf (`url(#…)`, `href="#…"`, `aria-labelledby`, `#id`-Selektoren) werden angepasst.
 
 Ohne eigene Accessibility-Angaben (`aria-hidden`, `role`, `aria-label`, `aria-labelledby`) bekommt das SVG den Alternativtext des Bildes als `aria-label` (mit `role="img"`), ohne Alternativtext `aria-hidden="true"`.
 

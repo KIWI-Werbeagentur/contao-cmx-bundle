@@ -12,9 +12,11 @@ use enshrined\svgSanitize\Sanitizer;
  * Uses enshrined/svg-sanitize, the allowlist sanitiser Contao core runs on SVG uploads
  * (FileUpload, DC_Folder), with remote references removed. <style> is allowed, so CSS
  * animations keep working (SMIL <animate> is not), but its rules are scoped to the SVG
- * (see StyleScoper). Unless the SVG declares its accessibility itself (aria-hidden, role,
- * aria-label or aria-labelledby), it gets role="img" and the given label as aria-label (like
- * the alt text of an <img>), or aria-hidden without a label.
+ * (see StyleScoper). Ids get a prefix that is unique per output (see SvgIdPrefixer).
+ *
+ * Unless the SVG declares its accessibility itself (aria-hidden, role, aria-label or
+ * aria-labelledby), it gets role="img" and the given label as aria-label (like the alt text
+ * of an <img>), or aria-hidden without a label.
  */
 class SvgSanitizer
 {
@@ -56,7 +58,7 @@ class SvgSanitizer
             return null;
         }
 
-        $this->scopeStyles($svg);
+        $this->scopeStyles($svg, SvgIdPrefixer::prefix($svg));
 
         if (
             !$svg->hasAttribute('aria-hidden')
@@ -89,7 +91,7 @@ class SvgSanitizer
      * whose root is the parent of the <style> element. Each <style> is therefore moved to the root <svg>
      * (the position of a <style> element doesn't affect rendering).
      */
-    private function scopeStyles(\DOMElement $svg): void
+    private function scopeStyles(\DOMElement $svg, SvgIdPrefixer $ids): void
     {
         // by local name: an SVG without xmlns has its elements in no namespace
         $styles = iterator_to_array((new \DOMXPath($svg->ownerDocument))->query('//*[local-name()="style"]'));
@@ -97,7 +99,7 @@ class SvgSanitizer
         $scoper = new StyleScoper();
 
         foreach ($styles as $style) {
-            $css = $scoper->scope($style->textContent);
+            $css = $scoper->scope($style->textContent, $ids);
             $style->textContent = $css;
 
             // appended in document order, so the cascade between the styles stays the same

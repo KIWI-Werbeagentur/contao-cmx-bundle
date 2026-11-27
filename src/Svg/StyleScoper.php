@@ -18,6 +18,8 @@ namespace Kiwi\Contao\CmxBundle\Svg;
  * Names defined by @keyframes and @font-face stay document-wide: a colliding name (e.g. "fadeIn")
  * replaces the page's animation or font, so SVGs should use distinctive names.
  *
+ * With an SvgIdPrefixer, #id selectors and url(#id) references follow the prefixed ids.
+ *
  * Pseudo-elements are not valid inside :is(), so rules like ".ring::before" are dropped. SVG
  * renders no generated content, so this only affects rare cases such as ::selection.
  */
@@ -29,12 +31,20 @@ class StyleScoper
      */
     private const GROUPING_RULES = ['media', 'supports', 'container', 'layer', 'scope', 'starting-style', 'document'];
 
-    public function scope(string $css): string
+    private ?SvgIdPrefixer $ids = null;
+
+    public function scope(string $css, ?SvgIdPrefixer $ids = null): string
     {
         $css = trim($this->stripComments($css));
 
         if ('' === $css) {
             return '';
+        }
+
+        $this->ids = $ids;
+
+        if (null !== $ids) {
+            $css = $ids->urls($css);
         }
 
         return "@scope {\n".$this->scopeRules($css)."\n}";
@@ -97,6 +107,7 @@ class StyleScoper
             $selector = trim(substr($selectorList, $offset, $end - $offset));
 
             if ('' !== $selector) {
+                $selector = $this->ids?->selector($selector) ?? $selector;
                 $selectors[] = ':where(:scope, :scope *):is('.$selector.')';
             }
 
