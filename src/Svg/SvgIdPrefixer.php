@@ -9,6 +9,10 @@ namespace Kiwi\Contao\CmxBundle\Svg;
  * and the same SVG can be printed several times, so url(#a) would resolve to the first match in the
  * page. All ids declared in the SVG get a prefix that is unique per output, and the references to
  * them are rewritten: url(#…) in attributes and CSS, href="#…", aria id lists and #id selectors.
+ *
+ * Covers ids as SVG editors write them. Rules with escaped ids (#a\.b), ids in at-rule preludes
+ * (@scope (#a), @supports selector(#a)) or attribute selectors other than [href="#…"] (such as
+ * [id="a"] or [data-x="#a"]) are not handled and stop matching.
  */
 class SvgIdPrefixer
 {
@@ -74,7 +78,7 @@ class SvgIdPrefixer
      */
     public function urls(string $value): string
     {
-        if (!$this->map || !str_contains($value, 'url(')) {
+        if (!$this->map || false === stripos($value, 'url(')) {
             return $value;
         }
 
